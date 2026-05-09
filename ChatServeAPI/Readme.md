@@ -148,15 +148,15 @@ ChatServeAPI follows a **client-server architecture** with clear separation of c
 
 ## Features
 
-- ✅ **Structured Prompting**: Template-based prompt engineering with variable substitution
-- ✅ **Multiple Chains**: Separate LLM chains for different tasks (essay, poem generation)
-- ✅ **REST API**: LangServe-powered HTTP endpoints with automatic documentation
-- ✅ **Web UI**: Responsive Streamlit interface with real-time feedback
-- ✅ **Error Handling**: Comprehensive exception handling with user-friendly messages
-- ✅ **Request Timeouts**: 60-second timeout for LLM inference
-- ✅ **Observability**: LangSmith integration for monitoring and debugging
-- ✅ **Local LLM**: Privacy-preserving inference with Ollama
-- ✅ **Type Hints**: Full Python type annotations for IDE support and documentation
+-  **Structured Prompting**: Template-based prompt engineering with variable substitution
+-  **Multiple Chains**: Separate LLM chains for different tasks (essay, poem generation)
+-  **REST API**: LangServe-powered HTTP endpoints with automatic documentation
+-  **Web UI**: Responsive Streamlit interface with real-time feedback
+-  **Error Handling**: Comprehensive exception handling with user-friendly messages
+-  **Request Timeouts**: 60-second timeout for LLM inference
+-  **Observability**: LangSmith integration for monitoring and debugging
+-  **Local LLM**: Privacy-preserving inference with Ollama
+-  **Type Hints**: Full Python type annotations for IDE support and documentation
 
 ## Prerequisites
 
