@@ -1,6 +1,6 @@
 # ChatServeAPI: LangChain-Powered LLM Service
 
-A production-ready REST API and web client for executing LLM-based text generation chains using LangChain and Ollama. This application demonstrates enterprise patterns for building scalable LLM services with structured prompting, API management, and monitoring capabilities.
+A production-ready AI application providing REST APIs and a web interface for executing LLM-powered text generation workflows using LangChain, LangSmith, FastAPI, and Ollama. The project showcases enterprise-grade architecture for scalable AI services with advanced prompt orchestration, API integration, observability, and monitoring capabilities.
 
 ## Table of Contents
 
