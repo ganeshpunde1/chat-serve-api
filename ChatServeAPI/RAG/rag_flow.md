@@ -47,6 +47,7 @@ This pipeline is the foundation of how AI systems (like chatbots or Q&A tools) c
 | Embed  | Vectorize chunks   | Number arrays   |
 | Store  | Save to Vector DB  | Searchable index|
 
+
 # RAG Pipeline — Technical Deep Dive
 
 This document explains the **RAG (Retrieval-Augmented Generation)** pipeline in detail — covering every stage, the tools available, and the technical decisions involved.
@@ -322,3 +323,191 @@ vectorstore = Chroma.from_documents(chunks, embeddings, persist_directory="./chr
 # Query
 results = vectorstore.similarity_search("Explain the main findings", k=3)
 ```
+
+# 🧩 End-to-End Example — Pinecone + LangChain RAG
+
+> Real-world pipeline to Load, Split, Embed, Store, and Query documents using **Pinecone** as the Vector Database.
+
+---
+
+## 📦 Install Dependencies
+
+```bash
+pip install langchain langchain-openai langchain-pinecone pinecone-client pypdf
+```
+
+---
+
+## 🔑 Setup Environment Variables
+
+```python
+import os
+
+os.environ["OPENAI_API_KEY"] = "your-openai-api-key"
+os.environ["PINECONE_API_KEY"] = "your-pinecone-api-key"
+os.environ["PINECONE_ENV"] = "your-pinecone-environment"  # e.g. "us-east-1"
+```
+
+---
+
+## 🚀 Full Pipeline
+
+```python
+from langchain.document_loaders import PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings
+from langchain_pinecone import PineconeVectorStore
+from pinecone import Pinecone, ServerlessSpec
+
+# ─────────────────────────────────────────
+# 1. LOAD — Read the PDF document
+# ─────────────────────────────────────────
+loader = PyPDFLoader("my_doc.pdf")
+docs = loader.load()
+print(f"✅ Loaded {len(docs)} pages")
+
+# ─────────────────────────────────────────
+# 2. SPLIT — Break into smaller chunks
+# ─────────────────────────────────────────
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=150
+)
+chunks = splitter.split_documents(docs)
+print(f"✅ Split into {len(chunks)} chunks")
+
+# ─────────────────────────────────────────
+# 3. EMBED — Convert text into vectors
+# ─────────────────────────────────────────
+embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+
+# ─────────────────────────────────────────
+# 4. PINECONE SETUP — Create Index
+# ─────────────────────────────────────────
+pc = Pinecone(api_key=os.environ["PINECONE_API_KEY"])
+
+index_name = "langchain-rag-demo"
+
+# Create index only if it doesn't exist
+if index_name not in pc.list_indexes().names():
+    pc.create_index(
+        name=index_name,
+        dimension=1536,           # text-embedding-3-small = 1536 dims
+        metric="cosine",
+        spec=ServerlessSpec(
+            cloud="aws",
+            region="us-east-1"    # change to your region
+        )
+    )
+    print(f"✅ Created Pinecone index: {index_name}")
+else:
+    print(f"✅ Index already exists: {index_name}")
+
+# ─────────────────────────────────────────
+# 5. STORE — Upsert chunks into Pinecone
+# ─────────────────────────────────────────
+vectorstore = PineconeVectorStore.from_documents(
+    documents=chunks,
+    embedding=embeddings,
+    index_name=index_name
+)
+print("✅ Documents stored in Pinecone!")
+
+# ─────────────────────────────────────────
+# 6. QUERY — Semantic Similarity Search
+# ─────────────────────────────────────────
+query = "Explain the main findings"
+results = vectorstore.similarity_search(query, k=3)
+
+print(f"\n🔍 Top {len(results)} Results for: '{query}'\n")
+for i, doc in enumerate(results):
+    print(f"--- Result {i+1} ---")
+    print(f"📄 Source : {doc.metadata.get('source', 'N/A')}")
+    print(f"📃 Page   : {doc.metadata.get('page', 'N/A')}")
+    print(f"📝 Content: {doc.page_content[:300]}...")
+    print()
+```
+
+---
+
+## 🔗 Load Existing Index (Skip Re-Uploading)
+
+```python
+# If documents are already stored, just connect to existing index
+vectorstore = PineconeVectorStore.from_existing_index(
+    index_name=index_name,
+    embedding=embeddings
+)
+results = vectorstore.similarity_search("What are the key conclusions?", k=3)
+```
+
+---
+
+## 🤖 Bonus — Use with LangChain RAG Chain
+
+```python
+from langchain_openai import ChatOpenAI
+from langchain.chains import RetrievalQA
+
+llm = ChatOpenAI(model="gpt-4o", temperature=0)
+
+# Build RAG chain
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type="stuff",
+    retriever=vectorstore.as_retriever(search_kwargs={"k": 3}),
+    return_source_documents=True
+)
+
+# Ask a question
+response = qa_chain.invoke({"query": "Explain the main findings"})
+
+print("🤖 Answer:\n", response["result"])
+print("\n📚 Sources:")
+for doc in response["source_documents"]:
+    print(f"  - Page {doc.metadata.get('page')}: {doc.page_content[:200]}...")
+```
+
+---
+
+## 🔁 Chroma vs Pinecone — Quick Comparison
+
+| Feature | Chroma | Pinecone |
+|---|---|---|
+| **Type** | Local / Self-hosted | Fully managed cloud |
+| **Setup** | No account needed | Requires API key |
+| **Persistence** | Local directory | Cloud-native |
+| **Scalability** | Limited | Highly scalable |
+| **Best For** | Dev / Prototyping | Production apps |
+| **Cost** | Free | Free tier + paid |
+| **Speed** | Fast locally | Fast at scale |
+
+---
+
+## 🗺️ Pipeline Flow
+
+```
+PDF File
+   │
+   ▼
+PyPDFLoader         ← Step 1: Load
+   │
+   ▼
+RecursiveCharacterTextSplitter  ← Step 2: Split into chunks
+   │
+   ▼
+OpenAIEmbeddings    ← Step 3: Convert text → vectors
+   │
+   ▼
+Pinecone Index      ← Step 4: Store vectors in cloud
+   │
+   ▼
+Similarity Search   ← Step 5: Query & retrieve top-k results
+   │
+   ▼
+RetrievalQA Chain   ← Step 6: LLM generates final answer
+```
+
+---
+
+> 💡 **Tip:** Use **Chroma** for local development and testing, then switch to **Pinecone** for production deployment with large-scale data.
