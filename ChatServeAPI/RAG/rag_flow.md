@@ -2,7 +2,7 @@
 
 ![RAG Pipeline](rag1.png)
 
-![RAG Pipeline](rag2.png)
+
 This diagram illustrates a **RAG (Retrieval-Augmented Generation)** pipeline — the process of preparing documents so an AI can search and retrieve relevant information from them. It has 4 stages:
 
 ---
@@ -512,5 +512,6 @@ RetrievalQA Chain   ← Step 6: LLM generates final answer
 ```
 
 ---
+![RAG Pipeline](rag2.png)
 
 > 💡 **Tip:** Use **Chroma** for local development and testing, then switch to **Pinecone** for production deployment with large-scale data.
