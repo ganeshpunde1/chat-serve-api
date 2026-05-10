@@ -512,6 +512,6 @@ RetrievalQA Chain   ← Step 6: LLM generates final answer
 ```
 
 ---
-![RAG Pipeline](rag2.png)
-
 > 💡 **Tip:** Use **Chroma** for local development and testing, then switch to **Pinecone** for production deployment with large-scale data.
+
+![RAG Pipeline](rag2.png)
