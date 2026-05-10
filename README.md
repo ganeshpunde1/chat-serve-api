@@ -1,6 +1,6 @@
 # LLM API & Web Client
 
-Production-ready LLM API and web client built with LangChain, FastAPI, Uvicorn, and Ollama for scalable AI text generation workflows.
+Production-ready LLM API and web client built with LangChain, LangServe, LangSmith, FastAPI, Uvicorn, and and Ollama (Llama2) for scalable AI text generation workflows.
 
 ---
 
