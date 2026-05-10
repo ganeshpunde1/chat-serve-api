@@ -7,3 +7,6 @@ fastapi
 streamlit
 python-dotenv
 sse_starlette
+bs4
+pypdf
+faiss-cpu
