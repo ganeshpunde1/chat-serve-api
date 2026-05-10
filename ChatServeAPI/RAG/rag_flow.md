@@ -1,5 +1,8 @@
-# RAG Pipeline Diagram Explanation
+# RAG Pipeline 
 
+![RAG Pipeline](rag1.png)
+
+![RAG Pipeline](rag2.png)
 This diagram illustrates a **RAG (Retrieval-Augmented Generation)** pipeline — the process of preparing documents so an AI can search and retrieve relevant information from them. It has 4 stages:
 
 ---
