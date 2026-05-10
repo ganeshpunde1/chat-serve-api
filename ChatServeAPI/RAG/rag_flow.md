@@ -364,7 +364,7 @@ from pinecone import Pinecone, ServerlessSpec
 # ─────────────────────────────────────────
 loader = PyPDFLoader("my_doc.pdf")
 docs = loader.load()
-print(f"✅ Loaded {len(docs)} pages")
+print(f" Loaded {len(docs)} pages")
 
 # ─────────────────────────────────────────
 # 2. SPLIT — Break into smaller chunks
@@ -374,7 +374,7 @@ splitter = RecursiveCharacterTextSplitter(
     chunk_overlap=150
 )
 chunks = splitter.split_documents(docs)
-print(f"✅ Split into {len(chunks)} chunks")
+print(f" Split into {len(chunks)} chunks")
 
 # ─────────────────────────────────────────
 # 3. EMBED — Convert text into vectors
@@ -399,9 +399,9 @@ if index_name not in pc.list_indexes().names():
             region="us-east-1"    # change to your region
         )
     )
-    print(f"✅ Created Pinecone index: {index_name}")
+    print(f" Created Pinecone index: {index_name}")
 else:
-    print(f"✅ Index already exists: {index_name}")
+    print(f" Index already exists: {index_name}")
 
 # ─────────────────────────────────────────
 # 5. STORE — Upsert chunks into Pinecone
@@ -411,7 +411,7 @@ vectorstore = PineconeVectorStore.from_documents(
     embedding=embeddings,
     index_name=index_name
 )
-print("✅ Documents stored in Pinecone!")
+print(" Documents stored in Pinecone!")
 
 # ─────────────────────────────────────────
 # 6. QUERY — Semantic Similarity Search
@@ -419,12 +419,12 @@ print("✅ Documents stored in Pinecone!")
 query = "Explain the main findings"
 results = vectorstore.similarity_search(query, k=3)
 
-print(f"\n🔍 Top {len(results)} Results for: '{query}'\n")
+print(f"\n Top {len(results)} Results for: '{query}'\n")
 for i, doc in enumerate(results):
     print(f"--- Result {i+1} ---")
-    print(f"📄 Source : {doc.metadata.get('source', 'N/A')}")
-    print(f"📃 Page   : {doc.metadata.get('page', 'N/A')}")
-    print(f"📝 Content: {doc.page_content[:300]}...")
+    print(f" Source : {doc.metadata.get('source', 'N/A')}")
+    print(f" Page   : {doc.metadata.get('page', 'N/A')}")
+    print(f" Content: {doc.page_content[:300]}...")
     print()
 ```
 
