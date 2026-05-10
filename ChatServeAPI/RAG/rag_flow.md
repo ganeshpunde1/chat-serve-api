@@ -515,3 +515,229 @@ RetrievalQA Chain   ← Step 6: LLM generates final answer
 > 💡 **Tip:** Use **Chroma** for local development and testing, then switch to **Pinecone** for production deployment with large-scale data.
 
 ![RAG Pipeline](rag2.png)
+
+# RAG (Retrieval-Augmented Generation) Architecture
+
+This diagram explains how a **RAG (Retrieval-Augmented Generation)** system answers user questions using external knowledge instead of relying only on the LLM’s memory.
+
+---
+
+# 🔹 Simple Flow
+
+```text
+Question → Retrieve → Prompt → LLM → Answer
+```
+
+---
+
+# 1️⃣ Question
+
+The user asks a question.
+
+Example:
+
+```text
+"What is the loan approval process?"
+```
+
+---
+
+# 2️⃣ Retrieve
+
+The system searches a **Vector Database** or knowledge base to find the most relevant document chunks related to the question.
+
+Think of this like:
+
+🔍 “Searching the company documents before answering.”
+
+The retrieved chunks may come from:
+
+- PDFs
+- Policies
+- Websites
+- Databases
+- Internal documents
+
+---
+
+# 🔹 What Happens Internally
+
+The question is converted into an embedding vector.
+
+Then the system performs:
+
+## Similarity Search
+
+It finds text chunks with similar meaning.
+
+Example retrieved chunks:
+
+```text
+Chunk 1: Loan eligibility rules
+Chunk 2: Credit score policy
+Chunk 3: Approval workflow
+```
+
+---
+
+# 3️⃣ Prompt
+
+Now the system builds a prompt for the LLM.
+
+The prompt contains:
+
+```text
+User Question
++
+Retrieved Context
+```
+
+Example:
+
+```text
+Use the following information:
+
+[Retrieved chunks]
+
+Question:
+What is the loan approval process?
+```
+
+---
+
+# 4️⃣ LLM
+
+The LLM (GPT, Claude, Llama, etc.) reads:
+
+- The user question
+- The retrieved documents
+
+Then generates a grounded answer.
+
+---
+
+# 5️⃣ Answer
+
+The final AI response is returned to the user.
+
+Example:
+
+```text
+"The loan approval process includes income verification,
+credit score evaluation, and underwriting review."
+```
+
+---
+
+# 🔹 Why This Architecture Is Powerful
+
+Without retrieval:
+
+```text
+LLM guesses from training data
+```
+
+With RAG:
+
+```text
+LLM answers using real company data
+```
+
+This reduces:
+
+- Hallucination
+- Wrong answers
+- Outdated information
+
+---
+
+# 🔹 Simple Real-Life Analogy
+
+Imagine a student in an exam.
+
+## Without RAG
+
+Student answers from memory only.
+
+❌ May forget or guess.
+
+---
+
+## With RAG
+
+Student first opens textbook notes,
+finds relevant section,
+then answers.
+
+✅ More accurate answer.
+
+---
+
+# 🔹 Technical Meaning of Each Block
+
+| Block | Meaning |
+|---|---|
+| Question | User query |
+| Retrieve | Search relevant chunks |
+| Prompt | Combine question + context |
+| LLM | Generate intelligent response |
+| Answer | Final grounded output |
+
+---
+
+# 🔹 Key Idea
+
+The LLM is NOT storing all enterprise knowledge internally.
+
+Instead:
+
+```text
+Knowledge stays in Vector DB
+```
+
+The system dynamically retrieves relevant information during runtime.
+
+---
+
+# 🔹 Example Technologies
+
+| Step | Technologies |
+|---|---|
+| Retrieve | Pinecone, FAISS, ChromaDB |
+| Prompt | LangChain PromptTemplate |
+| LLM | GPT-4, Claude, Llama |
+| Embeddings | OpenAI, HuggingFace |
+
+---
+
+# 🔹 End-to-End Example
+
+```text
+User asks question
+        ↓
+Convert question to embedding
+        ↓
+Search vector database
+        ↓
+Retrieve relevant chunks
+        ↓
+Build prompt
+        ↓
+Send to LLM
+        ↓
+Generate accurate answer
+```
+
+---
+
+# 🔥 Core Concept
+
+RAG makes LLMs:
+
+- More accurate
+- More reliable
+- More enterprise-ready
+- Less hallucinated
+- Able to answer from private data
+
+This is the foundation of modern AI chatbots and AI assistants.
