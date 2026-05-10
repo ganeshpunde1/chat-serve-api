@@ -4,6 +4,10 @@ Production-ready LLM API and web client built with LangChain, LangServe, LangSmi
 
 ---
 
+## ollama Model(s) :
+
+https://ollama.com/search
+
 ## ▶️ Run the Application
 
 To start the Streamlit web client:
